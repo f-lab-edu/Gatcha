@@ -1,7 +1,7 @@
 package org.example.gacha.service;
 
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.gacha.model.Item;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 public class GachaService {
 
     private final ItemRepository itemRepository;
-    private final Random random = new Random();
-
     private final int PROBABILITY_MAX_RANGE = 100;
     private final int PROBABILITY_MIN_RANGE = 0;
     private final int SSR_PROBABILITY = 4;
@@ -29,24 +27,24 @@ public class GachaService {
         if (items.isEmpty()) {
             throw new IllegalArgumentException("No items found for rarity: " + rarity);
         }
-        return items.get(random.nextInt(items.size()));
+        return getRandomItem(items);
     }
 
     public List<Item> drawTen() {
-        return random.ints(DRAW_COUNT, PROBABILITY_MIN_RANGE, PROBABILITY_MAX_RANGE)
+        return ThreadLocalRandom.current().ints(DRAW_COUNT, PROBABILITY_MIN_RANGE, PROBABILITY_MAX_RANGE)
             .mapToObj(this::getRarityFromInt)
             .map(rarity -> {
                 List<Item> items = itemRepository.findByRarity(rarity);
                 if (items.isEmpty()) {
                     throw new IllegalArgumentException("No items found for rarity: " + rarity);
                 }
-                return items.get(random.nextInt(items.size()));
+                return getRandomItem(items);
             })
             .collect(Collectors.toList());
     }
 
     private Rarity getRandomRarity() {
-        int roll = random.nextInt(PROBABILITY_MAX_RANGE);
+        int roll = ThreadLocalRandom.current().nextInt(PROBABILITY_MAX_RANGE);
         if (roll < SSR_PROBABILITY) return Rarity.SSR;
         if (roll < SR_PROBABILITY) return Rarity.SR;
         return Rarity.R;
@@ -56,5 +54,8 @@ public class GachaService {
         if (roll < SSR_PROBABILITY) return Rarity.SSR;
         if (roll < SR_PROBABILITY) return Rarity.SR;
         return Rarity.R;
+    }
+    private Item getRandomItem(List<Item> items) {
+        return items.get(ThreadLocalRandom.current().nextInt(items.size()));
     }
 }
