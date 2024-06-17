@@ -65,6 +65,10 @@ class GachaServiceTest {
         double srProbability = srCount / (double) numTrials;
         double rProbability = rCount / (double) numTrials;
 
+        System.out.println("ssrProbability: " + ssrProbability);
+        System.out.println("srProbability: " + srProbability);
+        System.out.println("rProbability: " + rProbability);
+
         assertEquals(0.04, ssrProbability, 0.01);
         assertEquals(0.43, srProbability, 0.01);
         assertEquals(0.53, rProbability, 0.01);

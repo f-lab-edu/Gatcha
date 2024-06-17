@@ -1,7 +1,7 @@
 package org.example.gacha.service;
 
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.gacha.model.Item;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class GachaService {
 
     private final ItemRepository itemRepository;
+    private final SecureRandom secureRandom = new SecureRandom();
     private final int PROBABILITY_MAX_RANGE = 100;
     private final int PROBABILITY_MIN_RANGE = 0;
     private final int SSR_PROBABILITY = 4;
@@ -31,7 +32,7 @@ public class GachaService {
     }
 
     public List<Item> drawTen() {
-        return ThreadLocalRandom.current().ints(DRAW_COUNT, PROBABILITY_MIN_RANGE, PROBABILITY_MAX_RANGE)
+        return secureRandom.ints(DRAW_COUNT, PROBABILITY_MIN_RANGE, PROBABILITY_MAX_RANGE)
             .mapToObj(this::getRarityFromInt)
             .map(rarity -> {
                 List<Item> items = itemRepository.findByRarity(rarity);
@@ -44,7 +45,7 @@ public class GachaService {
     }
 
     private Rarity getRandomRarity() {
-        int roll = ThreadLocalRandom.current().nextInt(PROBABILITY_MAX_RANGE);
+        int roll = secureRandom.nextInt(PROBABILITY_MAX_RANGE);
         if (roll < SSR_PROBABILITY) return Rarity.SSR;
         if (roll < SR_PROBABILITY) return Rarity.SR;
         return Rarity.R;
@@ -56,6 +57,6 @@ public class GachaService {
         return Rarity.R;
     }
     private Item getRandomItem(List<Item> items) {
-        return items.get(ThreadLocalRandom.current().nextInt(items.size()));
+        return items.get(secureRandom.nextInt(items.size()));
     }
 }
