@@ -45,25 +45,27 @@ class GachaServiceTest {
 
     @Test
     void testDrawProbabilities() {
-        int numTrials = 100000;
+        int numTrials = 10000;
         int ssrCount = 0;
         int srCount = 0;
         int rCount = 0;
 
         for (int i = 0; i < numTrials; i++) {
-            Item item = gachaService.draw();
-            if (Rarity.SSR.equals(item.getRarity())) {
-                ssrCount++;
-            } else if (Rarity.SR.equals(item.getRarity())) {
-                srCount++;
-            } else if (Rarity.R.equals(item.getRarity())) {
-                rCount++;
+            List<Item> items = gachaService.draw(10);
+            for(Item item : items){
+                if (Rarity.SSR.equals(item.getRarity())) {
+                    ssrCount++;
+                } else if (Rarity.SR.equals(item.getRarity())) {
+                    srCount++;
+                } else if (Rarity.R.equals(item.getRarity())) {
+                    rCount++;
+                }
             }
         }
 
-        double ssrProbability = ssrCount / (double) numTrials;
-        double srProbability = srCount / (double) numTrials;
-        double rProbability = rCount / (double) numTrials;
+        double ssrProbability = ssrCount / (double) (numTrials * 10);
+        double srProbability = srCount / (double) (numTrials * 10);
+        double rProbability = rCount / (double) (numTrials * 10);
 
         System.out.println("ssrProbability: " + ssrProbability);
         System.out.println("srProbability: " + srProbability);

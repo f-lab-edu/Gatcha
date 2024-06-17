@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.gacha.model.Item;
 import org.example.gacha.service.GachaService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,12 +15,7 @@ public class GachaController {
     private final GachaService gachaService;
 
     @GetMapping("/draw")
-    public Item draw() {
-        return gachaService.draw();
-    }
-
-    @GetMapping("/draw-ten")
-    public List<Item> drawTen() {
-        return gachaService.drawTen();
+    public List<Item> draw(@RequestParam int count) {
+        return gachaService.draw(count);
     }
 }
