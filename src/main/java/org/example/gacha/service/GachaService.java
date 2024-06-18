@@ -1,7 +1,7 @@
 package org.example.gacha.service;
 
-import java.security.SecureRandom;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.gacha.model.Item;
@@ -14,14 +14,13 @@ import org.springframework.stereotype.Service;
 public class GachaService {
 
     private final ItemRepository itemRepository;
-    private final SecureRandom secureRandom = new SecureRandom();
     private final int PROBABILITY_MAX_RANGE = 100;
     private final int PROBABILITY_MIN_RANGE = 0;
     private final int SSR_PROBABILITY = 4;
     private final int SR_PROBABILITY = 47;
 
     public List<Item> draw(int count) {
-        return secureRandom.ints(count, PROBABILITY_MIN_RANGE, PROBABILITY_MAX_RANGE)
+        return ThreadLocalRandom.current().ints(count, PROBABILITY_MIN_RANGE, PROBABILITY_MAX_RANGE)
             .mapToObj(this::getRarityFromInt)
             .map(rarity -> {
                 List<Item> items = itemRepository.findByRarity(rarity);
@@ -39,6 +38,6 @@ public class GachaService {
         return Rarity.R;
     }
     private Item getRandomItem(List<Item> items) {
-        return items.get(secureRandom.nextInt(items.size()));
+        return items.get(ThreadLocalRandom.current().nextInt(items.size()));
     }
 }
