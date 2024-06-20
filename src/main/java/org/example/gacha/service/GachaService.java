@@ -3,6 +3,7 @@ package org.example.gacha.service;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.example.gacha.model.Item;
 import org.example.gacha.model.Rarity;
@@ -38,6 +39,9 @@ public class GachaService {
         return Rarity.R;
     }
     private Item getRandomItem(List<Item> items) {
-        return items.get(ThreadLocalRandom.current().nextInt(items.size()));
+        List<Item> pickupList = items.stream().filter(Item::isPickup).toList();
+        List<Item> gachaList = Stream.concat(items.stream(), pickupList.stream())
+            .toList();
+        return gachaList.get(ThreadLocalRandom.current().nextInt(gachaList.size()));
     }
 }

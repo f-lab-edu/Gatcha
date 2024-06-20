@@ -14,13 +14,13 @@ import org.example.gacha.model.Rarity;
 public class ItemDto {
     private String name;
     private Rarity rarity;
-    private boolean isPickup;
+    private boolean pickup;
 
     public Item toEntity() {
         return Item.builder()
             .name(this.name)
             .rarity(this.rarity)
-            .isPickup(this.isPickup)
+            .isPickup(this.pickup)
             .build();
     }
 }
